@@ -1,0 +1,8 @@
+{
+  "name": "Clicker AI",
+  "description": "A fully offline Photography & Videography Assistant app that works as a smart mentor, creative planner, and learning system.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": []
+}
