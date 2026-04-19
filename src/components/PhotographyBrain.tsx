@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mountain, Moon, Camera as CameraIcon, Package, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Mountain, Moon, Camera as CameraIcon, Package, CheckCircle, AlertCircle, Heart } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
 import { photoCategories, photoDetails } from '../data/photographyData';
+import { toggleFavorite, isFavorited } from '../lib/favorites';
 
 interface PhotographyBrainProps {
   lang: Language;
@@ -20,10 +21,28 @@ const icons: Record<string, any> = {
 
 export const PhotographyBrain = ({ lang }: PhotographyBrainProps) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
   const t = translations[lang];
   const categories = photoCategories(lang);
 
   const activeDetails = selectedId ? photoDetails[selectedId]?.[lang] : null;
+
+  useEffect(() => {
+    if (selectedId) {
+      setIsSaved(isFavorited(`photo-${selectedId}`));
+    }
+  }, [selectedId]);
+
+  const handleSave = () => {
+    if (!selectedId) return;
+    const cat = categories.find(c => c.id === selectedId);
+    const saved = toggleFavorite({
+      id: `photo-${selectedId}`,
+      title: cat?.name || 'Technique',
+      type: lang === 'en' ? 'Photo' : 'ফটোগ্রাফি'
+    });
+    setIsSaved(saved);
+  };
 
   return (
     <div className="p-4 mt-16 pb-24 h-full">
@@ -65,6 +84,14 @@ export const PhotographyBrain = ({ lang }: PhotographyBrainProps) => {
               ← {lang === 'en' ? 'Back' : 'পিছনে'}
             </button>
             <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
+            <button
+               onClick={handleSave}
+               className={`p-2 rounded-xl border transition-all ${
+                 isSaved ? 'bg-accent/10 border-accent/20 text-accent' : 'bg-glass border-[var(--border)] text-dim hover:border-accent/30'
+               }`}
+            >
+               <Heart size={16} fill={isSaved ? "currentColor" : "none"} />
+            </button>
           </div>
 
           <div className="immersive-card p-6 overflow-hidden relative">

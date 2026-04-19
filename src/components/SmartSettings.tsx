@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Zap, AlertTriangle, Aperture, Timer, Eye } from 'lucide-react';
+import { Zap, AlertTriangle, Aperture, Timer, Eye, Heart } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
 import { lightingOptions, subjectOptions, motionOptions, calculateSettings } from '../data/settingsEngine';
+import { toggleFavorite, isFavorited } from '../lib/favorites';
 
 interface SmartSettingsProps {
   lang: Language;
@@ -52,9 +53,24 @@ export const SmartSettings = ({ lang }: SmartSettingsProps) => {
   const [lighting, setLighting] = useState(lightingOptions(lang)[0].id);
   const [subject, setSubject] = useState(subjectOptions(lang)[0].id);
   const [motionLevel, setMotionLevel] = useState(motionOptions(lang)[0].id);
+  const [isSaved, setIsSaved] = useState(false);
   const t = translations[lang];
 
   const result = calculateSettings(lighting, subject, motionLevel, lang);
+  const settingsId = `settings-${lighting}-${subject}-${motionLevel}`;
+
+  useEffect(() => {
+    setIsSaved(isFavorited(settingsId));
+  }, [settingsId]);
+
+  const handleSave = () => {
+    const saved = toggleFavorite({
+      id: settingsId,
+      title: `${result.iso} • ${result.shutter} • ${result.aperture}`,
+      type: lang === 'en' ? 'Settings' : 'সেটিংস'
+    });
+    setIsSaved(saved);
+  };
 
   const getSimResult = () => {
     if (lighting.includes('dark')) return lang === 'en' ? 'Low light simulation active. High sensitivity mode enabled.' : 'অন্ধকারে শ্যুটিং মোড সক্রিয়। হাই সেনসিটিভিটি মোড চালু আছে।';
@@ -135,6 +151,21 @@ export const SmartSettings = ({ lang }: SmartSettingsProps) => {
               </div>
             ))}
           </div>
+
+          <button
+            onClick={handleSave}
+            className={`w-full mt-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all border ${
+              isSaved 
+                ? 'bg-accent/10 border-accent/20 text-accent' 
+                : 'bg-glass border-[var(--border)] text-dim hover:border-accent/30'
+            }`}
+          >
+            <Heart size={14} fill={isSaved ? "currentColor" : "none"} />
+            {isSaved 
+              ? (lang === 'en' ? 'Saved to Library' : 'লাইব্রেরিতে সেভ করা হয়েছে') 
+              : (lang === 'en' ? 'Save to Library' : 'লাইব্রেরিতে সেভ করুন')
+            }
+          </button>
         </div>
 
         {result.warning && (

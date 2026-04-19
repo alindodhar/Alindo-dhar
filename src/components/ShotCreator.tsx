@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Plus, Camera, Video, List, Check } from 'lucide-react';
+import { Plus, Camera, Video, List, Check, Archive } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Language } from '../types';
 
@@ -65,6 +65,25 @@ export const ShotCreator = ({ lang }: { lang: Language }) => {
 
   const progress = type ? (checkedItems[type]?.length || 0) / (shotLists[type]?.length || 1) * 100 : 0;
 
+  const archiveProduction = () => {
+    if (!type) return;
+    const cat = categories.find(c => c.id === type);
+    const newProject = {
+      id: Date.now(),
+      title: `${cat?.label} - ${new Date().toLocaleDateString()}`,
+      date: new Date().toISOString().split('T')[0],
+      count: checkedItems[type]?.length || 0,
+      type: 'Production'
+    };
+    
+    const saved = localStorage.getItem('clicker_projects');
+    const projects = saved ? JSON.parse(saved) : [];
+    projects.unshift(newProject);
+    localStorage.setItem('clicker_projects', JSON.stringify(projects));
+    
+    alert(lang === 'en' ? 'Production archived to Projects!' : 'উৎপাদন প্রজেক্টে আর্কাইভ করা হয়েছে!');
+  };
+
   return (
     <div className="py-2 space-y-6 h-full">
       {!type ? (
@@ -83,7 +102,7 @@ export const ShotCreator = ({ lang }: { lang: Language }) => {
           ))}
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-6 text-[var(--text)]">
           <div className="flex items-center justify-between">
              <button onClick={() => setType(null)} className="text-accent text-[9px] font-black uppercase tracking-[0.2em] bg-accent-muted px-4 py-2 rounded-xl border border-accent/20 hover:border-accent transition-all">
               ← {lang === 'en' ? 'Back' : 'পিছনে'}
@@ -96,10 +115,10 @@ export const ShotCreator = ({ lang }: { lang: Language }) => {
             </div>
           </div>
           
-          <div className="immersive-card p-8 border-accent/20">
+          <div className="immersive-card p-8 border-accent/20 bg-glass">
              <div className="flex justify-between items-start mb-8">
               <div>
-                <h3 className="text-xl font-extrabold text-[var(--text)] tracking-tight">
+                <h3 className="text-xl font-extrabold tracking-tight">
                   {categories.find(c => c.id === type)?.label} {lang === 'en' ? 'Production List' : 'শট লিস্ট'}
                 </h3>
                 <p className="text-[10px] font-bold text-dim uppercase tracking-widest mt-1">Status: {progress === 100 ? 'Completed' : 'Planning Stage'}</p>
@@ -117,7 +136,7 @@ export const ShotCreator = ({ lang }: { lang: Language }) => {
                     key={i} 
                     onClick={() => toggleShot(shot)}
                     className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left group ${
-                      isChecked ? 'bg-accent/10 border-accent/30' : 'bg-glass border-[var(--border)] hover:border-accent/30'
+                      isChecked ? 'bg-accent/10 border-accent/30' : 'bg-[var(--surface)] border-[var(--border)] hover:border-accent/30'
                     }`}
                   >
                     <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${
@@ -135,8 +154,12 @@ export const ShotCreator = ({ lang }: { lang: Language }) => {
               })}
             </div>
 
-            <button className="w-full mt-8 py-4 bg-accent text-white rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-lg shadow-accent/20 hover:shadow-accent/40 active:scale-95 transition-all">
-               {lang === 'en' ? 'Export Production Guide' : 'গাইড এক্সপোর্ট করুন'}
+            <button 
+              onClick={archiveProduction}
+              className="w-full mt-8 py-4 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-lg shadow-accent/20 hover:shadow-accent/40 active:scale-95 transition-all flex items-center justify-center gap-3"
+            >
+               <Archive size={14} />
+               {lang === 'en' ? 'Archive to Projects' : 'প্রজেক্টে আর্কাইভ করুন'}
             </button>
           </div>
         </div>

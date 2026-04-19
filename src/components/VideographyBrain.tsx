@@ -1,59 +1,119 @@
-import React, { useState } from 'react';
-import { Video, Film, Camera, Move, Wind, CheckCircle, AlertCircle, PlayCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Video, Film, Camera, Move, Wind, CheckCircle, AlertCircle, PlayCircle, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
+import { toggleFavorite, isFavorited } from '../lib/favorites';
 
 interface VideographyBrainProps {
   lang: Language;
 }
 
-const categories = [
-  { id: 'cinematic', name: 'Cinematic', icon: Film, bg: 'bg-accent' },
-  { id: 'vlog', name: 'Vlog / Personal', icon: Video, bg: 'bg-accent' },
-  { id: 'travel', name: 'Travel / Nature', icon: Camera, bg: 'bg-accent' },
-  { id: 'slowmo', name: 'Slow Motion', icon: Wind, bg: 'bg-accent' },
+const categories = (lang: string) => [
+  { id: 'cinematic', name: lang === 'en' ? 'Cinematic' : 'সিনেমাটিক', icon: Film, bg: 'bg-accent' },
+  { id: 'vlog', name: lang === 'en' ? 'Vlog / Personal' : 'ভ্লগ / ব্যক্তিগত', icon: Video, bg: 'bg-accent' },
+  { id: 'travel', name: lang === 'en' ? 'Travel / Nature' : 'ভ্রমণ / প্রকৃতি', icon: Camera, bg: 'bg-accent' },
+  { id: 'slowmo', name: lang === 'en' ? 'Slow Motion' : 'স্লো মোশন', icon: Wind, bg: 'bg-accent' },
 ];
 
 const videoDetails: any = {
   cinematic: {
-    settings: { fps: '24 fps', shutter: '1/48', exposure: 'ND Filter Req.', movement: 'Gimbal / Slider' },
-    tips: [
-      { title: 'Golden Ratio', description: 'Use shallow depth of field for focus.' },
-      { title: 'Color Grade', description: 'Shoot in Log profile for maximum range.' }
-    ],
-    mistakes: ['Fast panning', 'Auto focus hunting', 'High shutter speeds']
+    en: {
+      settings: { fps: '24 fps', shutter: '1/48', exposure: 'ND Filter Req.', movement: 'Gimbal / Slider' },
+      tips: [
+        { title: 'Golden Ratio', description: 'Use shallow depth of field for focus.' },
+        { title: 'Color Grade', description: 'Shoot in Log profile for maximum range.' }
+      ],
+      mistakes: ['Fast panning', 'Auto focus hunting', 'High shutter speeds']
+    },
+    bn: {
+      settings: { fps: '২৪ এফপিএস', shutter: '১/৪৮', exposure: 'এনডি ফিল্টার প্রয়োজন', movement: 'গিম্বল / স্লাইডার' },
+      tips: [
+        { title: 'গোল্ডেন রেশিও', description: 'ফোকাসের জন্য অগভীর ডেপথ অফ ফিল্ড ব্যবহার করুন।' },
+        { title: 'কালার গ্রেড', description: 'সর্বোচ্চ রেঞ্জের জন্য লগ প্রোফাইলে শ্যুট করুন।' }
+      ],
+      mistakes: ['অতিরিক্ত দ্রুত প্যানিং', 'অটো ফোকাস হান্টিং', 'হাই শাটার স্পিড']
+    }
   },
   vlog: {
-    settings: { fps: '30 / 60 fps', shutter: '1/60+', exposure: 'Auto ISO', movement: 'Handheld / Selfie' },
-    tips: [
-      { title: 'Audio First', description: 'Always use an external microphone.' },
-      { title: 'Eye Level', description: 'Maintain eye contact with the lens.' }
-    ],
-    mistakes: ['Ignoring audio', 'Bad lighting', 'No story structure']
+    en: {
+      settings: { fps: '30 / 60 fps', shutter: '1/60+', exposure: 'Auto ISO', movement: 'Handheld / Selfie' },
+      tips: [
+        { title: 'Audio First', description: 'Always use an external microphone.' },
+        { title: 'Eye Level', description: 'Maintain eye contact with the lens.' }
+      ],
+      mistakes: ['Ignoring audio', 'Bad lighting', 'No story structure']
+    },
+    bn: {
+      settings: { fps: '৩০ / ৬০ এফপিএস', shutter: '১/৬০+', exposure: 'অটো আইএসও', movement: 'হ্যান্ডহেল্ড / সেলফি' },
+      tips: [
+        { title: 'অডিও আগে', description: 'সবসময় একটি এক্সটার্নাল মাইক্রোফোন ব্যবহার করুন।' },
+        { title: 'চোখের লেভেল', description: 'লেন্সের সাথে সরাসরি চোখের যোগাযোগ বজায় রাখুন।' }
+      ],
+      mistakes: ['অডিও অবহেলা করা', 'খারাপ লাইটিং', 'গল্পের অভাব']
+    }
   },
   travel: {
-    settings: { fps: '24 / 60 fps', shutter: '1/50+', exposure: 'High dynamic range', movement: 'Drone / Handheld' },
-    tips: [
-      { title: 'Golden Hour', description: 'Shoot early morning or late afternoon.' },
-      { title: 'B-Roll', description: 'Capture environment details for transitions.' }
-    ],
-    mistakes: ['Over-saturation', 'Shaky footage', 'Lack of narrative']
+    en: {
+      settings: { fps: '24 / 60 fps', shutter: '1/50+', exposure: 'High dynamic range', movement: 'Drone / Handheld' },
+      tips: [
+        { title: 'Golden Hour', description: 'Shoot early morning or late afternoon.' },
+        { title: 'B-Roll', description: 'Capture environment details for transitions.' }
+      ],
+      mistakes: ['Over-saturation', 'Shaky footage', 'Lack of narrative']
+    },
+    bn: {
+      settings: { fps: '২৪ / ৬০ এফপিএস', shutter: '১/৫০+', exposure: 'হাই ডাইনামিক রেঞ্জ', movement: 'ড্রোন / হ্যান্ডহেল্ড' },
+      tips: [
+        { title: 'গোল্ডেন আওয়ার', description: 'ভোর বা সূর্যাস্তের সময় শ্যুট করুন।' },
+        { title: 'বি-রোল', description: 'ট্রানজিশনের জন্য আশেপাশের পরিবেশের শট নিন।' }
+      ],
+      mistakes: ['অতিরিক্ত স্যাচুরেশন', 'কাঁপা ফুটেজ', 'গল্পের অভাব']
+    }
   },
   slowmo: {
-    settings: { fps: '120 / 240 fps', shutter: '1/250+', exposure: 'Bright light required', movement: 'Static / Smooth' },
-    tips: [
-      { title: 'Light Quality', description: 'High FPS requires significant lighting.' },
-      { title: 'Calculated Action', description: 'Time the peak of action for slow-mo.' }
-    ],
-    mistakes: ['Dim footage', 'Flickering lights', 'Empty movement']
+    en: {
+      settings: { fps: '120 / 240 fps', shutter: '1/250+', exposure: 'Bright light required', movement: 'Static / Smooth' },
+      tips: [
+        { title: 'Light Quality', description: 'High FPS requires significant lighting.' },
+        { title: 'Calculated Action', description: 'Time the peak of action for slow-mo.' }
+      ],
+      mistakes: ['Dim footage', 'Flickering lights', 'Empty movement']
+    },
+    bn: {
+      settings: { fps: '১২০ / ২৪০ এফপিএস', shutter: '১/২৫০+', exposure: 'প্রচুর আলোর প্রয়োজন', movement: 'স্থির / মসৃণ' },
+      tips: [
+        { title: 'আলোর মান', description: 'হাই এফপিএসের জন্য প্রচুর আলোর প্রয়োজন হয়।' },
+        { title: 'পরিকল্পিত অ্যাকশন', description: 'স্লো-মো শটের জন্য অ্যাকশনের সঠিক সময় বেছে নিন।' }
+      ],
+      mistakes: ['অস্পষ্ট ফুটেজ', 'লাইটের ফ্লিকারিং', 'অপ্রয়োজনীয় মুভমেন্ট']
+    }
   }
 };
 
 export const VideographyBrain = ({ lang }: VideographyBrainProps) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
   const t = translations[lang];
-  const activeDetails = selectedId ? videoDetails[selectedId] : null;
+  const cats = categories(lang);
+  const activeDetails = selectedId ? videoDetails[selectedId][lang] : null;
+
+  useEffect(() => {
+    if (selectedId) {
+      setIsSaved(isFavorited(`video-${selectedId}`));
+    }
+  }, [selectedId]);
+
+  const handleSave = () => {
+    if (!selectedId) return;
+    const cat = cats.find(c => c.id === selectedId);
+    const saved = toggleFavorite({
+      id: `video-${selectedId}`,
+      title: cat?.name || 'Technique',
+      type: lang === 'en' ? 'Video' : 'ভিডিও'
+    });
+    setIsSaved(saved);
+  };
 
   return (
     <div className="py-2 space-y-6">
@@ -66,7 +126,7 @@ export const VideographyBrain = ({ lang }: VideographyBrainProps) => {
             exit={{ opacity: 0 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
-            {categories.map((cat, idx) => (
+            {cats.map((cat, idx) => (
               <motion.button
                 key={cat.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -97,9 +157,17 @@ export const VideographyBrain = ({ lang }: VideographyBrainProps) => {
                 onClick={() => setSelectedId(null)}
                 className="text-accent bg-accent-muted px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-accent/20 hover:border-accent transition-all"
               >
-                ← Back
+                ← {lang === 'en' ? 'Back' : 'পিছনে'}
               </button>
               <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
+              <button
+                onClick={handleSave}
+                className={`p-2 rounded-xl border transition-all ${
+                  isSaved ? 'bg-accent/10 border-accent/20 text-accent' : 'bg-glass border-[var(--border)] text-dim hover:border-accent/30'
+                }`}
+              >
+                <Heart size={16} fill={isSaved ? "currentColor" : "none"} />
+              </button>
             </div>
 
             <div className="immersive-card p-8 border-accent/20 relative overflow-hidden">

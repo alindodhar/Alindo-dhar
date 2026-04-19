@@ -80,21 +80,26 @@ export const Dashboard = ({ onSelectStage, lang }: DashboardProps) => {
           variants={item}
           whileTap={{ scale: 0.98 }}
           onClick={() => onSelectStage(card.id)}
-          className="immersive-card p-5 group flex flex-col justify-between items-start h-full min-h-[150px] text-left transition-all"
+          className="immersive-card p-6 group flex flex-col justify-between items-start h-full min-h-[160px] text-left transition-all relative overflow-hidden"
         >
-          <div className="flex flex-col gap-3">
-            <span className="text-3xl filter saturate-[0.8] brightness-[1.1]">{idxToEmoji(card.id)}</span>
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+            <card.icon size={80} className="text-accent" />
+          </div>
+          <div className="flex flex-col gap-4 relative z-10">
+            <div className={`p-3 rounded-2xl w-fit ${card.color}`}>
+              <card.icon size={22} />
+            </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tight leading-tight group-hover:text-accent transition-colors">
+              <span className="text-xl font-extrabold tracking-tight leading-tight text-[var(--text)] group-hover:text-accent transition-colors">
                 {card.title}
               </span>
-              <span className="text-xs text-dim mt-1.5 line-clamp-2 font-medium">
+              <span className="text-[11px] text-dim mt-2 line-clamp-2 font-medium max-w-[180px]">
                 {lang === 'en' ? 'Professional module for detailed ' + card.title.toLowerCase() : card.title + ' এর জন্য আধুনিক মডিউল'}
               </span>
             </div>
           </div>
-          <div className="mt-4 text-[11px] font-black text-accent opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 uppercase tracking-widest">
-            {lang === 'en' ? 'Explore Module' : 'শুরু করুন'} <span className="text-lg leading-none">→</span>
+          <div className="mt-4 text-[10px] font-black text-accent opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 flex items-center gap-2 uppercase tracking-[0.2em]">
+            {lang === 'en' ? 'Launch Module' : 'শুরু করুন'} <ChevronRight size={14} />
           </div>
         </motion.button>
       ))}
@@ -102,18 +107,23 @@ export const Dashboard = ({ onSelectStage, lang }: DashboardProps) => {
       {/* Daily Tip Widget */}
       <motion.div
         variants={item}
-        className="col-span-full p-6 immersive-card relative overflow-hidden group"
+        className="col-span-full p-8 immersive-card relative overflow-hidden group bg-glass"
       >
-        <div className="absolute -top-[50px] -right-[50px] w-[150px] h-[150px] bg-accent blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
-        <div className="flex items-center gap-2 mb-3">
-          <Star className="w-4 h-4 text-accent animate-pulse" />
-          <span className="text-[10px] uppercase font-black tracking-[0.2em] text-accent">Intelligence Active</span>
+        <div className="absolute -top-[50px] -right-[50px] w-[200px] h-[200px] bg-accent blur-[120px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-accent/20 rounded-lg">
+             <Star size={16} className="text-accent animate-pulse" />
+          </div>
+          <span className="text-[10px] uppercase font-black tracking-[0.3em] text-accent">Active Insight</span>
         </div>
-        <p className="text-base font-medium leading-relaxed italic text-[var(--text)]">
+        <p className="text-xl font-extrabold tracking-tight leading-relaxed italic text-[var(--text)] max-w-2xl">
           "{lang === 'en' ? 'The best camera is the one you have with you.' : 'সেরা ক্যামেরাটি হলো সেটি যা আপনার সাথেই আছে।'}"
         </p>
-        <div className="flex justify-between items-center mt-4">
-          <p className="text-[10px] text-dim uppercase font-black tracking-widest">— Chase Jarvis</p>
+        <div className="flex justify-between items-center mt-6">
+          <p className="text-[11px] text-dim uppercase font-black tracking-[0.2em]">— Chase Jarvis</p>
+          <div className="h-1 bg-glass w-24 rounded-full overflow-hidden">
+             <div className="h-full bg-accent animate-pulse w-full"></div>
+          </div>
         </div>
       </motion.div>
 
@@ -140,20 +150,4 @@ export const Dashboard = ({ onSelectStage, lang }: DashboardProps) => {
       )}
     </motion.div>
   );
-};
-
-const idxToEmoji = (id: string) => {
-  switch (id) {
-    case 'photoBrain': return '🧠';
-    case 'videoBrain': return '🎞️';
-    case 'smartSettings': return '⚙️';
-    case 'shotCreator': return '📅';
-    case 'learningLab': return '🏆';
-    case 'chatAssistant': return '💬';
-    case 'toolsGuides': return '🧭';
-    case 'profile': return '👤';
-    case 'projects': return '📂';
-    case 'favorites': return '⭐';
-    default: return '📷';
-  }
 };
