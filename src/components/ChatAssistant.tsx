@@ -117,6 +117,20 @@ export const ChatAssistant = ({ lang }: ChatAssistantProps) => {
     return t.chat.fallback;
   };
 
+  const getSuggestions = () => {
+    if (!activeContext) return lang === 'en' ? ['What is ISO?', 'Aperture guide', 'Composition tips'] : ['ISO কি?', 'অ্যাপারচার গাইড', 'কম্পোজিশন টিপস'];
+    
+    const contextMap: Record<string, string[]> = {
+      iso: lang === 'en' ? ['Shutter speed?', 'Avoid noise', 'Auto ISO'] : ['শাটার স্পিড?', 'নয়েজ কমানো', 'অটো আইএসও'],
+      aperture: lang === 'en' ? ['What is Bokeh?', 'Portrait f-stop', 'Landscape f-stop'] : ['বোকেহ কি?', 'পোর্ট্রেট অ্যাপারচার', 'ল্যান্ডস্কেপ অ্যাপারচার'],
+      portrait: lang === 'en' ? ['Lighting tips', 'Pose ideas', 'Best lenses'] : ['লাইটিং টিপস', 'পোজ আইডিয়া', 'সেরা লেন্স'],
+      landscape: lang === 'en' ? ['Focus stack', 'Tripod tips', 'Filters'] : ['ফোকাস স্ট্যাক', 'ট্রাইপড টিপস', 'ফিল্টার'],
+      shutter: lang === 'en' ? ['Long exposure', 'Freeze action', 'Motion blur'] : ['লং এক্সপোজার', 'ফ্রেম ফ্রিজ', 'মোশন ব্লার'],
+    };
+
+    return contextMap[activeContext] || (lang === 'en' ? ['Photography basics', 'Video tips'] : ['ফটোগ্রাফি বেসিকস', 'ভিডিও টিপস']);
+  };
+
   const clearChat = () => {
     setMessages([]);
     localStorage.removeItem('clicker_chat_history');
@@ -133,7 +147,12 @@ export const ChatAssistant = ({ lang }: ChatAssistantProps) => {
             <span className="text-[9px] font-bold text-dim uppercase tracking-widest">Assistant Online</span>
           </div>
         </div>
-        <Bot size={18} className="text-accent opacity-50" />
+        <div className="flex items-center gap-2">
+           <button onClick={clearChat} className="p-2 text-dim hover:text-red-500 transition-colors">
+              <span className="text-[9px] font-black uppercase tracking-widest">Clear</span>
+           </button>
+           <Bot size={18} className="text-accent opacity-50" />
+        </div>
       </div>
       
       <div 
@@ -173,7 +192,20 @@ export const ChatAssistant = ({ lang }: ChatAssistantProps) => {
         </AnimatePresence>
       </div>
 
-      <div className="p-4 border-t border-[var(--border)] bg-[var(--surface)]">
+      <div className="p-4 border-t border-[var(--border)] bg-[var(--surface)] space-y-4">
+        {/* Suggestion Chips */}
+        <div className="flex flex-wrap gap-2 px-1">
+          {getSuggestions().map((s, i) => (
+            <button
+              key={i}
+              onClick={() => { setInputText(s); }}
+              className="px-3 py-1.5 bg-glass border border-[var(--border)] rounded-full text-[10px] font-bold text-dim hover:border-accent hover:text-accent transition-all whitespace-nowrap"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+
         <div className="flex gap-2 bg-glass p-1.5 rounded-2xl border border-[var(--border)] shadow-inner">
           <input
             type="text"

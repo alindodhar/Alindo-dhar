@@ -67,14 +67,14 @@ export const chatKeywordData = (lang: Language) => [
       {
         opening: lang === 'en' ? 'Great question about ISO!' : 'আইএসও সম্পর্কে চমৎকার প্রশ্ন!',
         answer: lang === 'en' ? 'ISO controls your camera transparency to light.' : 'আইএসও আপনার ক্যামেরার আলোর সংবেদনশীলতা নিয়ন্ত্রণ করে।',
-        explanation: lang === 'en' ? 'Lower ISO (100) is for bright daylight, higher (3200+) is for dark rooms.' : 'কম আইএসও (১০০) দিনের আলোর জন্য, আর বেশি (৩২০০০+) অন্ধকার ঘরের জন্য।',
+        explanation: lang === 'en' ? 'Lower ISO (100) is for bright daylight, higher (3200+) is for dark rooms.' : 'কম আইএসও (১০০) দিনের আলোর জন্য, আর বেশি (৩২৩০০+) অন্ধকার ঘরের জন্য।',
         suggestion: lang === 'en' ? 'Always try to keep it as low as possible for clean shots.' : 'পরিষ্কার ছবির জন্য যতটা সম্ভব এটি কম রাখার চেষ্টা করুন।',
         followUp: lang === 'en' ? 'Would you like to know about aperture next?' : 'আপনি কি এরপর অ্যাপারচার সম্পর্কে জানতে চান?',
       }
     ]
   },
   {
-    keywords: ['shutter', 'শাটার'],
+    keywords: ['shutter', 'শাটার', 'speed'],
     responses: [
       {
         opening: lang === 'en' ? 'Let\'s talk about Shutter Speed!' : 'শাটার স্পিড নিয়ে কথা বলা যাক!',
@@ -82,6 +82,54 @@ export const chatKeywordData = (lang: Language) => [
         explanation: lang === 'en' ? 'Fast (1/1000s) freezes motion. Slow (1/30s) creates motion blur.' : 'দ্রুত (১/১০০০স) গতিকে স্থির করে। ধীর (১/৩০স) মোশন ব্লার তৈরি করে।',
         suggestion: lang === 'en' ? 'Use a tripod for speeds slower than 1/60s.' : '১/৬০ সেকেন্ডের চেয়ে কম গতির জন্য ট্রাইপড ব্যবহার করুন।',
         followUp: lang === 'en' ? 'Do you want tips for sports photography?' : 'আপনি কি স্পোর্টস ফটোগ্রাফির জন্য টিপস চান?',
+      }
+    ]
+  },
+  {
+    keywords: ['aperture', 'অ্যাপারচার', 'bokeh', 'f-stop'],
+    responses: [
+      {
+        opening: lang === 'en' ? 'Aperture is key to "Bokeh"!' : 'সঠিক অ্যাপারচারই হলো "বোকেহ" এর রহস্য!',
+        answer: lang === 'en' ? 'It is the opening in your lens.' : 'এটি হলো আপনার লেন্সের ভেতরের ছিদ্র বা খোলা অংশ।',
+        explanation: lang === 'en' ? 'Low f-numbers (f/1.8) mean a wider opening and blurrier background.' : 'ছোট f-সংখ্যা (f/১.৮) মানে বড় ছিদ্র এবং ঝাপসা ব্যাকগ্রাউন্ড।',
+        suggestion: lang === 'en' ? 'Use f/1.8 for portraits and f/11 for landscapes.' : 'পোর্ট্রেটের জন্য f/১.৮ এবং ল্যান্ডস্কেপের জন্য f/১১ ব্যবহার করুন।',
+        followUp: lang === 'en' ? 'Should we discuss depth of field more?' : 'আমরা কি ডেপথ অফ ফিল্ড নিয়ে আরও আলোচনা করব?',
+      }
+    ]
+  },
+  {
+    keywords: ['composition', 'কম্পোজিশন', 'thirds', 'framing'],
+    responses: [
+      {
+        opening: lang === 'en' ? 'Composition makes or breaks a photo.' : 'কম্পোজিশনই একটি ছবির মান নির্ধারণ করে।',
+        answer: lang === 'en' ? 'The Rule of Thirds is the most common technique.' : 'রুল অফ থার্ডস হলো সবচেয়ে জনপ্রিয় কম্পোজিশন কৌশল।',
+        explanation: lang === 'en' ? 'Imagine a 3x3 grid; place your subject where lines cross.' : '৩x৩ গ্রিডের কথা ভাবুন; যেখানে লাইনগুলো একে অপরকে ছেদ করে সেখানে সাবজেক্ট রাখুন।',
+        suggestion: lang === 'en' ? 'Try taking the same shot from 3 different angles.' : 'একই ছবি ৩টি ভিন্ন অ্যাঙ্গেল থেকে তোলার চেষ্টা করুন।',
+        followUp: lang === 'en' ? 'Do you want to see our framing guide?' : 'আপনি কি আমাদের ফ্রেমিং গাইড দেখতে চান?',
+      }
+    ]
+  },
+  {
+    keywords: ['lighting', 'light', 'আলো', 'golden hour'],
+    responses: [
+      {
+        opening: lang === 'en' ? 'Photography is the art of lighting!' : 'ফটোগ্রাফি হলো আলোর খেলা!',
+        answer: lang === 'en' ? 'Directional light creates depth and drama.' : 'দিকনির্ণয়ী আলো ছবির গভীরতা ও নাটকীয়তা তৈরি করে।',
+        explanation: lang === 'en' ? 'The Golden Hour (sunrise/sunset) provides soft, warm light.' : 'গোল্ডেন আওয়ার (সূর্যোদয়/সূর্যাস্ত) নরম ও উষ্ণ আলো প্রদান করে।',
+        suggestion: lang === 'en' ? 'Avoid harsh midday sun for portraits.' : 'পোর্ট্রেটের জন্য দুপুরের কড়া রোদ এড়িয়ে চলুন।',
+        followUp: lang === 'en' ? 'Need tips for indoor lighting?' : 'ইনডোর লাইটিং নিয়ে টিপস লাগবে কি?',
+      }
+    ]
+  },
+  {
+    keywords: ['framerate', 'fps', 'фпс', 'slow-mo'],
+    responses: [
+      {
+        opening: lang === 'en' ? 'Frame rates determine the mood!' : 'ফ্রেম রেট ভিডিওর মুড নির্ধারণ করে!',
+        answer: lang === 'en' ? '24fps is standard for a cinematic film look.' : 'সিনেমাটিক মুভি লুকের জন্য ২৪ এফপিএস আদর্শ।',
+        explanation: lang === 'en' ? 'Higher rates (60fps/120fps) allow for smooth slow motion.' : 'বেশি এফপিএস (৬০/১২০) থাকলে ভিডিও স্লো মোশন করা যায়।',
+        suggestion: lang === 'en' ? 'Always follow the 180-degree shutter rule.' : 'সবসময় ১৮০-ডিগ্রি শাটার রুল মেনে চলার চেষ্টা করুন।',
+        followUp: lang === 'en' ? 'Want to calculate storage for 4K video?' : 'আপনি কি ৪কে ভিডিওর মেমরি হিসাব করতে চান?',
       }
     ]
   }

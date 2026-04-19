@@ -41,7 +41,20 @@ export const LearningLab = ({ lang }: LearningLabProps) => {
       const correctCount = newAnswers.reduce((acc, ans, idx) => {
         return acc + (ans === quizzes[idx].correctAnswer ? 1 : 0);
       }, 0);
-      setQuizScore({ correct: correctCount, total: quizzes.length });
+      
+      const newScore = { correct: correctCount, total: quizzes.length };
+      setQuizScore(newScore);
+      
+      // Persist score to global tracker
+      const savedScores = localStorage.getItem('clicker_quiz_scores');
+      const scores = savedScores ? JSON.parse(savedScores) : [];
+      scores.push({
+        id: selectedQuiz,
+        timestamp: Date.now(),
+        ...newScore
+      });
+      localStorage.setItem('clicker_quiz_scores', JSON.stringify(scores));
+      
       setSelectedQuiz(null);
     }
   };
